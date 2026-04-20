@@ -1,3 +1,8 @@
+/**
+ * @file main.cpp
+ * @brief Application entry point and network bootstrap for sensor streaming.
+ */
+
 #include <QGuiApplication>
 #include <QObject>
 #include <QQmlApplicationEngine>
@@ -9,22 +14,45 @@
 #include "AppState.hpp"
 #include "OscilloscopeItem.hpp"
 
+/**
+ * @brief Reads one byte from a TCP socket.
+ * @param socket Source TCP socket.
+ * @return Byte value read from the socket buffer.
+ */
 uint8_t readUInt8Tcp(QTcpSocket* socket) { return socket->read(1)[0]; }
 
+/** @brief Reusable single-byte TCP output buffer. */
 static char bufTcp[1];
 
+/**
+ * @brief Writes one byte to a TCP socket.
+ * @param socket Destination TCP socket.
+ * @param value Byte value to write.
+ */
 void writeUInt8Tcp(QTcpSocket* socket, uint8_t value) {
     bufTcp[0] = value;
     socket->write(bufTcp, 1);
 }
 
+/** @brief Reusable single-byte UDP output buffer. */
 static char bufUdp[1];
 
+/**
+ * @brief Writes one byte to a UDP socket.
+ * @param socket Destination UDP socket.
+ * @param value Byte value to write.
+ */
 void writeUInt8Udp(QUdpSocket* socket, uint8_t value) {
     bufUdp[0] = value;
     socket->write(bufUdp, 1);
 }
 
+/**
+ * @brief Initializes Qt, network sockets and the QML scene.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line arguments.
+ * @return Qt event loop exit code.
+ */
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
     AppState appState(&app);

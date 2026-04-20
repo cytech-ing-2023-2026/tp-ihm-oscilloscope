@@ -1,3 +1,8 @@
+/**
+ * @file OscilloscopeItem.cpp
+ * @brief Implements rendering and sampling behavior for OscilloscopeItem.
+ */
+
 #include "OscilloscopeItem.hpp"
 
 #include <QPainter>
@@ -5,6 +10,7 @@
 #include <QTimer>
 #include <QPainterPath>
 
+/** @copydoc OscilloscopeItem::OscilloscopeItem(QQuickItem*) */
 OscilloscopeItem::OscilloscopeItem(QQuickItem* parent) : QQuickPaintedItem(parent) {
     setRenderTarget(QQuickPaintedItem::FramebufferObject);
     setAntialiasing(true);
@@ -14,8 +20,10 @@ OscilloscopeItem::OscilloscopeItem(QQuickItem* parent) : QQuickPaintedItem(paren
     timer_.start(1000 / 30.0);
 }
 
+/** @copydoc OscilloscopeItem::model */
 AppSensorList* OscilloscopeItem::model() const { return model_; }
 
+/** @copydoc OscilloscopeItem::setModel */
 void OscilloscopeItem::setModel(AppSensorList* model) {
     if (model_ == model) return;
 
@@ -24,6 +32,7 @@ void OscilloscopeItem::setModel(AppSensorList* model) {
     update();
 }
 
+/** @copydoc OscilloscopeItem::tick */
 void OscilloscopeItem::tick() {
     if (model_) {
         auto& sensors = model_->sensors();
@@ -36,6 +45,7 @@ void OscilloscopeItem::tick() {
     update();  // triggers repaint
 }
 
+/** @copydoc OscilloscopeItem::paint */
 void OscilloscopeItem::paint(QPainter* painter) {
     if (!model_)
         return;

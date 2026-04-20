@@ -1,3 +1,8 @@
+/**
+ * @file apptp2_qmltyperegistrations.cpp
+ * @brief Registers the tp2 QML module types.
+ */
+
 /****************************************************************************
 ** Generated QML type registration code
 **
@@ -14,9 +19,13 @@
 #define Q_QMLTYPE_EXPORT
 #endif
 
+/**
+ * @brief Registers the tp2 QML module.
+ */
 Q_QMLTYPE_EXPORT void qml_register_types_tp2()
 {
     qmlRegisterModule("tp2", 1, 0);
 }
 
+/** @brief Static module registration object used during startup. */
 static const QQmlModuleRegistration registration("tp2", qml_register_types_tp2);
