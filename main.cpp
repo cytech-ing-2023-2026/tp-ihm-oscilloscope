@@ -4,6 +4,7 @@
 #include <QQmlContext>
 #include <QTcpSocket>
 #include <QUdpSocket>
+#include <QCommandLineParser>
 
 #include "AppState.hpp"
 #include "OscilloscopeItem.hpp"
@@ -85,8 +86,50 @@ int main(int argc, char* argv[]) {
         }
     });
 
-    tcpSocket.connectToHost("10.8.0.5", 1234);
-    udpSocket.connectToHost("10.8.0.5", 1234);
+    QCommandLineParser parser;
+    parser.setApplicationDescription(
+        QStringLiteral(
+            "Simulated sensor: registers with the server via TCP, then streams data via UDP."
+        )
+    );
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    // Host
+    QCommandLineOption hostOpt(
+        QStringLiteral("host"),
+        QStringLiteral("Server IP address (default: 127.0.0.1)."),
+        QStringLiteral("ip"),
+        QStringLiteral("127.0.0.1")
+    );
+    parser.addOption(hostOpt);
+    // Port
+    QCommandLineOption portOpt(
+        QStringLiteral("port"),
+        QStringLiteral("Server port (default: 1234)."),
+        QStringLiteral("port"),
+        QStringLiteral("1234")
+    );
+    parser.addOption(portOpt);
+    
+    parser.process(app);
+
+    const QHostAddress serverAddress(parser.value(hostOpt));
+    if (serverAddress.isNull()) {
+        qCritical() << "Invalid server address:" << parser.value(hostOpt);
+        return 1;
+    }
+
+    bool ok = false;
+    // Port
+    const quint16 serverPort = static_cast<quint16>(parser.value(portOpt).toUInt(&ok));
+    if (!ok || serverPort == 0) {
+        qCritical() << "Invalid port:" << parser.value(portOpt);
+        return 1;
+    }
+
+    tcpSocket.connectToHost(serverAddress, serverPort);
+    udpSocket.connectToHost(serverAddress, serverPort);
 
     qmlRegisterType<OscilloscopeItem>("App", 1, 0, "Oscilloscope");
     engine.rootContext()->setContextProperty("appState", &appState);

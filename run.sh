@@ -2,5 +2,5 @@
 
 if "make"
 then
-  ./apptp2
+  ./apptp2 "$@"
 fi

@@ -5,7 +5,7 @@ Window {
     width: 640
     height: 480
     visible: true
-    title: qsTr("Hello World")
+    title: qsTr("Oscilloscope (TP2 Client)")
 
     Oscilloscope {
         anchors.fill: parent
